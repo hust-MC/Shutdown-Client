@@ -1,6 +1,7 @@
 package com.mc.client;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -13,36 +14,30 @@ import android.widget.*;
 
 public class MainActivity extends Activity
 {
-	Socket socket;
+	Socket socket = null;
 	EditText editText;
 	Button button;
-	String IP;
 
 	public void widget_init()
 	{
-		editText = (EditText)findViewById(R.id.input_IP);
-		button = (Button)findViewById(R.id.shutBt);
+		editText = (EditText) findViewById(R.id.input_IP);
+		button = (Button) findViewById(R.id.shutBt);
 	}
-	
-	public void getIP()
-	{
-		IP = editText.getText().toString();
-	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		widget_init();
-		
 	}
 
 	public void onClick_shutdown(View view)
 	{
 		
-		getIP();
-		Log.d("MC",IP);
+		final String IP = editText.getText().toString();
+		Log.d("MC", IP);
 		new Thread(new Runnable()
 		{
 			@Override
@@ -50,7 +45,8 @@ public class MainActivity extends Activity
 			{
 				try
 				{
-					socket = new Socket(IP, 6666);
+					socket = new Socket();
+					socket.connect(new InetSocketAddress(IP,6666),3000);
 					Log.d("MC", "123");
 				} catch (UnknownHostException e)
 				{
