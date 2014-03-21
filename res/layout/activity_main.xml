@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="30dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,16 +18,36 @@
         <EditText
             android:id="@+id/input_IP"
             style="@style/edittext_style"
+            android:digits="0123456789."
             android:hint="请输入IP地址" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/shutBt"
-        android:background="@drawable/button"
+    <LinearLayout
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:onClick="onClick_shutdown"
-        android:text="关机" />
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/shutBt"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button"
+            android:onClick="onClick_shutdown"
+            android:text="关机" />
+
+        <Button
+            android:id="@+id/shutBt"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button"
+            android:text="清空"
+            android:onClick="onClick_clear" />
+    </LinearLayout>
 
 </LinearLayout>

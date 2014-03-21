@@ -1,4 +1,4 @@
-package com.mc.client;
+package com.example.shut_client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
 public class MainActivity extends Activity
@@ -26,6 +28,22 @@ public class MainActivity extends Activity
 		button = (Button) findViewById(R.id.shutBt);
 	}
 
+	public void saveIP(String IP)
+	{
+		SharedPreferences sp = getSharedPreferences("RememberIP",
+				Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putString("IP", IP);
+		editor.commit();
+	}
+
+	public String getIP()
+	{
+		SharedPreferences sp = getSharedPreferences("RememberIP",
+				Activity.MODE_PRIVATE);
+		return sp.getString("IP", null);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -33,6 +51,8 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 
 		widget_init();
+		getIP();
+		editText.setText(getIP());
 	}
 
 	public void onClick_shutdown(View view)
@@ -49,39 +69,36 @@ public class MainActivity extends Activity
 				{
 					socket = new Socket();
 					socket.connect(new InetSocketAddress(IP, 6666), 3000);
-					Log.d("MC", "123");
-				}
-				catch (Exception e)
+					Log.d("MC", "success");
+					saveIP(IP);
+				} catch (Exception e)
 				{
 					if (socket != null)
 					{
 						try
 						{
 							socket.close();
-						}
-						catch (IOException e1)
+						} catch (IOException e1)
 						{
 						}
 						socket = null;
 					}
 					Log.v("Socket", e.getMessage());
 				}
-//				finally
-//				{
-//					try
-//					{
-//						socket.close();
-//					}
-//					catch (IOException e)
-//					{
-//						e.printStackTrace();
-//					}
-//				}
 				Message message = Message.obtain();
 				message.obj = socket;
 				handler.sendMessage(message);
 			}
 		}).start();
+	}
+
+	public void onClick_clear(View view)
+	{
+		SharedPreferences sp = getSharedPreferences("RememberIP",
+				Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sp.edit();
+		editor.clear().commit();
+		editText.setText("");
 	}
 
 	@Override
