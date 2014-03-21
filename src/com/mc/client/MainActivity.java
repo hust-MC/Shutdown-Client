@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
@@ -35,7 +37,7 @@ public class MainActivity extends Activity
 
 	public void onClick_shutdown(View view)
 	{
-		
+
 		final String IP = editText.getText().toString();
 		Log.d("MC", IP);
 		new Thread(new Runnable()
@@ -46,22 +48,38 @@ public class MainActivity extends Activity
 				try
 				{
 					socket = new Socket();
-					socket.connect(new InetSocketAddress(IP,6666),3000);
+					socket.connect(new InetSocketAddress(IP, 6666), 3000);
 					Log.d("MC", "123");
-				} catch (UnknownHostException e)
-				{
-					e.printStackTrace();
-				} catch (IOException e)
-				{
-					e.printStackTrace();
 				}
-				try
+				catch (Exception e)
 				{
-					socket.close();
-				} catch (IOException e)
-				{
-					e.printStackTrace();
+					if (socket != null)
+					{
+						try
+						{
+							socket.close();
+						}
+						catch (IOException e1)
+						{
+						}
+						socket = null;
+					}
+					Log.v("Socket", e.getMessage());
 				}
+//				finally
+//				{
+//					try
+//					{
+//						socket.close();
+//					}
+//					catch (IOException e)
+//					{
+//						e.printStackTrace();
+//					}
+//				}
+				Message message = Message.obtain();
+				message.obj = socket;
+				handler.sendMessage(message);
 			}
 		}).start();
 	}
@@ -74,4 +92,19 @@ public class MainActivity extends Activity
 		return true;
 	}
 
+	private Handler handler = new Handler()
+	{
+		@Override
+		public void handleMessage(Message msg)
+		{
+			if (msg.obj == null)
+			{
+				Toast.makeText(getApplicationContext(), "¡¨Ω” ß∞‹",
+						Toast.LENGTH_LONG).show();
+			}
+			else if (msg.obj instanceof Socket)
+			{
+			}
+		}
+	};
 }
