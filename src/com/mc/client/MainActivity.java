@@ -10,8 +10,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
@@ -26,7 +28,6 @@ public class MainActivity extends Activity
 	{
 		editText = (EditText) findViewById(R.id.input_IP);
 		button = (Button) findViewById(R.id.shutBt);
-
 	}
 
 	@Override
@@ -40,7 +41,6 @@ public class MainActivity extends Activity
 
 	public void onClick_shutdown(View view)
 	{
-
 		final String IP = editText.getText().toString();
 		Log.d("MC", IP);
 		alertdialog = (LinearLayout) getLayoutInflater().inflate(
@@ -92,11 +92,23 @@ public class MainActivity extends Activity
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// TODO Auto-generated method stub
+		if (item.getItemId() == 1)
+		{
+			new AlertDialog.Builder(this).setTitle("关于")
+					.setMessage("版本: 远程关机(V1.2)")
+					.setNegativeButton("确定", null).show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		menu.add(0, 1, 1, "关于");
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	private Handler handler = new Handler()
@@ -111,7 +123,8 @@ public class MainActivity extends Activity
 			}
 			else if (msg.obj instanceof Socket)
 			{
-				Toast.makeText(MainActivity.this,"关机成功！", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, "关机成功！", Toast.LENGTH_SHORT)
+						.show();
 			}
 		}
 	};
