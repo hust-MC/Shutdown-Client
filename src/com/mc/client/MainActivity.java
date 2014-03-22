@@ -98,7 +98,7 @@ public class MainActivity extends Activity
 		if (item.getItemId() == 1)
 		{
 			new AlertDialog.Builder(this).setTitle("关于")
-					.setMessage("版本: 远程关机(V1.2)")
+					.setMessage("版本: 远程关机(V1.3)")
 					.setNegativeButton("确定", null).show();
 		}
 		return super.onOptionsItemSelected(item);
