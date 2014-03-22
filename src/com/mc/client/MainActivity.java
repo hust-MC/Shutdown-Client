@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -94,12 +95,11 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// TODO Auto-generated method stub
 		if (item.getItemId() == 1)
 		{
 			new AlertDialog.Builder(this).setTitle("关于")
-					.setMessage("版本: 远程关机(V1.3)")
-					.setNegativeButton("确定", null).show();
+					.setMessage("版本: 远程关机(V1.3)").setNegativeButton("确定", null)
+					.show();
 		}
 		return super.onOptionsItemSelected(item);
 	}
