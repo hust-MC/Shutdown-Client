@@ -1,8 +1,10 @@
-package com.example.shut_client;
+package com.mc.client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import com.example.shut_client.R;
 
 import android.os.Bundle;
 import android.os.Handler;
