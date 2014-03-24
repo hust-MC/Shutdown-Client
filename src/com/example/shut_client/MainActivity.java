@@ -3,17 +3,17 @@ package com.example.shut_client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
 public class MainActivity extends Activity
@@ -21,6 +21,7 @@ public class MainActivity extends Activity
 	Socket socket = null;
 	EditText editText;
 	Button button;
+	LinearLayout alertDialog;
 
 	public void widget_init()
 	{
@@ -57,39 +58,53 @@ public class MainActivity extends Activity
 
 	public void onClick_shutdown(View view)
 	{
-
 		final String IP = editText.getText().toString();
 		Log.d("MC", IP);
-		new Thread(new Runnable()
+		alertDialog = (LinearLayout) getLayoutInflater().inflate(
+				R.layout.alertdialog, null);
+		final AlertDialog alert = new AlertDialog.Builder(this)
+				.setView(alertDialog).setTitle("PowerOff")
+				.setMessage("正在努力连接电脑...").show();
+		new Handler().postDelayed(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				try
+				new Thread(new Runnable()
 				{
-					socket = new Socket();
-					socket.connect(new InetSocketAddress(IP, 6666), 3000);
-					Log.d("MC", "success");
-					saveIP(IP);
-				} catch (Exception e)
-				{
-					if (socket != null)
+					@Override
+					public void run()
 					{
 						try
 						{
-							socket.close();
-						} catch (IOException e1)
+							socket = new Socket();
+							socket.connect(new InetSocketAddress(IP, 6666),
+									3000);
+							saveIP(IP);
+							alert.dismiss();
+							Log.d("MC", "123");
+						} catch (Exception e)
 						{
+							alert.dismiss();
+							if (socket != null)
+							{
+								try
+								{
+									socket.close();
+								} catch (IOException e1)
+								{
+								}
+								socket = null;
+							}
+							Log.v("Socket", e.getMessage());
 						}
-						socket = null;
+						Message message = Message.obtain();
+						message.obj = socket;
+						handler.sendMessage(message);
 					}
-					Log.v("Socket", e.getMessage());
-				}
-				Message message = Message.obtain();
-				message.obj = socket;
-				handler.sendMessage(message);
+				}).start();
 			}
-		}).start();
+		}, 2000);
 	}
 
 	public void onClick_clear(View view)
@@ -99,14 +114,6 @@ public class MainActivity extends Activity
 		SharedPreferences.Editor editor = sp.edit();
 		editor.clear().commit();
 		editText.setText("");
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 
 	private Handler handler = new Handler()
@@ -121,7 +128,29 @@ public class MainActivity extends Activity
 			}
 			else if (msg.obj instanceof Socket)
 			{
+				Toast.makeText(MainActivity.this, "远程关机成功", Toast.LENGTH_SHORT)
+						.show();
+				Log.d("MC","success");
 			}
 		}
 	};
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == 1)
+		{
+			new AlertDialog.Builder(this).setTitle("关于")
+					.setMessage("版本: 远程关机(V1.4)").setNegativeButton("确定", null)
+					.show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		menu.add(0, 1, 1, "关于");
+		return super.onCreateOptionsMenu(menu);
+	}
 }

@@ -18,8 +18,9 @@
         <EditText
             android:id="@+id/input_IP"
             style="@style/edittext_style"
-            android:digits="0123456789."
-            android:hint="请输入IP地址" />
+            android:hint="请输入IP地址"
+            android:inputType="textEmailAddress" />
+
     </LinearLayout>
 
     <LinearLayout
